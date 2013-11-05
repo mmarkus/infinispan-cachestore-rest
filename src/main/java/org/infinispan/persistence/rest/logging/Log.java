@@ -26,7 +26,7 @@ import static org.jboss.logging.Logger.Level.WARN;
 
 import org.infinispan.commons.CacheConfigurationException;
 import org.infinispan.commons.CacheException;
-import org.infinispan.persistence.CacheLoaderException;
+import org.infinispan.persistence.spi.PersistenceException;
 import org.jboss.logging.Cause;
 import org.jboss.logging.LogMessage;
 import org.jboss.logging.Message;
@@ -45,16 +45,16 @@ public interface Log extends org.infinispan.util.logging.Log {
    CacheConfigurationException noServersConfigured();
 
    @Message(value = "HTTP error: %s", id = 22002)
-   CacheLoaderException httpError(String status);
+   PersistenceException httpError(String status);
 
    @Message(value = "HTTP error", id = 22003)
-   CacheLoaderException httpError(@Cause Throwable t);
+   PersistenceException httpError(@Cause Throwable t);
 
    @Message(value = "Host not specified", id = 22004)
    CacheConfigurationException hostNotSpecified();
 
    @Message(value = "Error loading entries from remote server", id = 22005)
-   CacheLoaderException errorLoadingRemoteEntries(@Cause Exception e);
+   PersistenceException errorLoadingRemoteEntries(@Cause Exception e);
 
    @Message(value = "Could not find migration data in cache %s", id = 22006)
    CacheException missingMigrationData(String name);

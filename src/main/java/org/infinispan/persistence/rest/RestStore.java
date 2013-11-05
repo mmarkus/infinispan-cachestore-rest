@@ -28,7 +28,7 @@ import org.infinispan.marshall.core.MarshalledEntry;
 import org.infinispan.metadata.InternalMetadata;
 import org.infinispan.metadata.InternalMetadataImpl;
 import org.infinispan.metadata.Metadata;
-import org.infinispan.persistence.CacheLoaderException;
+import org.infinispan.persistence.spi.PersistenceException;
 import org.infinispan.persistence.TaskContextImpl;
 import org.infinispan.persistence.keymappers.MarshallingTwoWayKey2StringMapper;
 import org.infinispan.persistence.rest.configuration.ConnectionPoolConfiguration;
@@ -131,7 +131,7 @@ public class RestStore implements AdvancedLoadWriteStore {
       try {
          return path + urlCodec.encode(key2StringMapper.getStringMapping(key));
       } catch (EncoderException e) {
-         throw new CacheLoaderException(e);
+         throw new PersistenceException(e);
       }
    }
 
@@ -166,7 +166,7 @@ public class RestStore implements AdvancedLoadWriteStore {
          put.setEntity(new ByteArrayEntity(marshall(contentType, entry), ContentType.create(contentType)));
          httpClient.execute(httpHost, put);
       } catch (Exception e) {
-         throw new CacheLoaderException(e);
+         throw new PersistenceException(e);
       } finally {
          put.abort();
       }
@@ -179,7 +179,7 @@ public class RestStore implements AdvancedLoadWriteStore {
          HttpResponse response = httpClient.execute(httpHost, del);
          EntityUtils.consume(response.getEntity());
       } catch (Exception e) {
-         throw new CacheLoaderException(e);
+         throw new PersistenceException(e);
       } finally {
          del.abort();
       }
@@ -193,7 +193,7 @@ public class RestStore implements AdvancedLoadWriteStore {
          EntityUtils.consume(response.getEntity());
          return isSuccessful(response.getStatusLine().getStatusCode());
       } catch (Exception e) {
-         throw new CacheLoaderException(e);
+         throw new PersistenceException(e);
       } finally {
          del.abort();
       }
@@ -227,7 +227,7 @@ public class RestStore implements AdvancedLoadWriteStore {
       } catch (IOException e) {
          throw log.httpError(e);
       } catch (Exception e) {
-         throw new CacheLoaderException(e);
+         throw new PersistenceException(e);
       } finally {
          get.abort();
       }
@@ -274,7 +274,7 @@ public class RestStore implements AdvancedLoadWriteStore {
          }
          eacs.waitUntilAllCompleted();
          if (eacs.isExceptionThrown()) {
-            throw new CacheLoaderException("Execution exception!", eacs.getFirstException());
+            throw new PersistenceException("Execution exception!", eacs.getFirstException());
          }
       } catch (Exception e) {
          throw log.errorLoadingRemoteEntries(e);
